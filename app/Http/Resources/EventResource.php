@@ -14,6 +14,21 @@ class EventResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'description' => $this->description,
+            'start_time' => $this->start_time,
+            'end_time' => $this->end_time,
+            'user' => new UserResource($this->whenLoaded('user')),
+            'attendees' =>  AttendeeResource::collection($this->whenLoaded('attendees')),
+        ];
+        // return parent::toArray($request);
     }
+
+    // 'name',
+    // 'description',
+    // 'start_time',
+    // 'end_time',
+    // 'user_id',
 }

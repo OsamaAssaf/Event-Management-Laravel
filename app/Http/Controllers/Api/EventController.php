@@ -29,7 +29,7 @@ class EventController extends Controller
      */
     public function index()
     {
-        // Gate::authorize('viewAny', Event::class);
+        Gate::authorize('viewAny', Event::class);
         $query = $this->loadRelationships(Event::query());
 
         // return EventResource::collection(Event::all());
@@ -45,6 +45,7 @@ class EventController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('create', Event::class);
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -66,6 +67,7 @@ class EventController extends Controller
     public function show(Event $event)
     {
         // $event->load('user', 'attendees');
+        Gate::authorize('view', $event);
         return new EventResource($this->loadRelationships($event));
         // return $event;
     }
@@ -79,7 +81,9 @@ class EventController extends Controller
         //     abort(403, 'You are not authorized to update this event.');
         // }
 
-        Gate::authorize('update-event', $event);
+        // Gate::authorize('update-event', $event);
+
+        Gate::authorize('update', $event);
 
         $data = $request->validate([
             'name' => 'sometimes|string|max:255',
@@ -99,6 +103,7 @@ class EventController extends Controller
      */
     public function destroy(Event $event)
     {
+        Gate::authorize('delete', $event);
         $event->delete();
 
         return response(status: 204);
